@@ -1,0 +1,19 @@
+# -*- encoding: utf-8 -*-
+lib = File.expand_path('../lib', __FILE__)
+$LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
+require 'capistrano-custom/version'
+
+Gem::Specification.new do |gem|
+  gem.name          = "capistrano-custom"
+  gem.version       = Capistrano::Custom::VERSION
+  gem.authors       = ["Michael Prilop"]
+  gem.email         = ["Michael.Prilop@gmail.com"]
+  gem.description   = %q{Custom capistrano tasks and defaults}
+  gem.summary       = %q{Custom capistrano tasks and defaults}
+  gem.homepage      = ""
+
+  gem.files         = `git ls-files`.split($/)
+  gem.executables   = gem.files.grep(%r{^bin/}).map{ |f| File.basename(f) }
+  gem.test_files    = gem.files.grep(%r{^(test|spec|features)/})
+  gem.require_paths = ["lib"]
+end
