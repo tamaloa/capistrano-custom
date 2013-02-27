@@ -20,10 +20,9 @@ Or install it yourself as:
 
 TODO: Write usage instructions here
 
-## Contributing
+## Inspired by
 
-1. Fork it
-2. Create your feature branch (`git checkout -b my-new-feature`)
-3. Commit your changes (`git commit -am 'Add some feature'`)
-4. Push to the branch (`git push origin my-new-feature`)
-5. Create new Pull Request
+Gem structure for custom capistrano recipes and setting defaults is nicely explained by
+[timriley](http://openmonkey.com/blog/2010/01/19/making-your-capistrano-recipe-book/)
+
+Some recipes adopted from [webficient](https://github.com/webficient/capistrano-recipes)
