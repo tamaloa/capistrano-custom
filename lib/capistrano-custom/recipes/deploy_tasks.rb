@@ -7,7 +7,7 @@ Capistrano::Configuration.instance.load do
    end
 
    task :preload_app, :roles => :web, :except => { :no_release => true } do
-     run "#{try_sudo} wget #{app_domain}.ci.moez.fraunhofer.de -O /dev/null &> /dev/null"
+     run "#{try_sudo} wget #{full_app_domain} -O /dev/null &> /dev/null"
    end
 
    desc "Make symlink for database yaml"

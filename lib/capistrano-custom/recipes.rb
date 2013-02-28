@@ -1,10 +1,6 @@
-require 'bundler/capistrano'
-require 'capistrano/ext/multistage'
-require 'capistrano_colors'
-
-load 'deploy/assets'
-
-load 'config/deploy/recipes/helpers'
-load 'config/deploy/recipes/db'
-load 'config/deploy/recipes/deploy_tasks'
-load 'config/deploy/recipes/passenger'
+require 'capistrano-custom/recipes/db'
+require 'capistrano-custom/recipes/deploy_tasks'
+require 'capistrano-custom/recipes/helpers'
+require 'capistrano-custom/recipes/passenger'
+require 'capistrano-custom/recipes/teamcity'
+require 'capistrano-custom/recipes/utils'
