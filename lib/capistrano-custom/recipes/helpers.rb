@@ -2,38 +2,28 @@
 # These are helper methods that will be available to your recipes.
 # =========================================================================
 
-# automatically sets the environment based on presence of 
-# :stage (multistage gem), :rails_env, or RAILS_ENV variable; otherwise defaults to 'production'
-def environment  
+
+def environment
   if exists?(:stage)
     stage
-  elsif exists?(:rails_env)
-    rails_env  
-  elsif(ENV['RAILS_ENV'])
-    ENV['RAILS_ENV']
   else
-    "production"  
+    # We do not want to run into production by mistake
+    "staging"
   end
 end
 
-def is_using_nginx
-  is_using('nginx',:web_server)
+def run_rake(cmd, options={}, &block)
+  command = "cd #{release_path} && /usr/bin/env bundle exec rake #{cmd} RAILS_ENV=#{environment}"
+  run(command, options, &block)
 end
 
-def is_using_passenger
-  is_using('passenger',:app_server)
-end
+#def run_rails_command(cmd, options={}, &block)
+#  command = "cd #{deploy_to}/current && /usr/bin/env bundle exec rails runner '#{cmd}' RAILS_ENV=#{rails_env}"
+#  run(command, options, &block)
+#end
 
-def is_using_unicorn
-  is_using('unicorn',:app_server)
-end
-
-def is_app_monitored?
-  is_using('bluepill', :monitorer) || is_using('god', :monitorer)
-end
-
-def is_using(something, with_some_var)
- exists?(with_some_var.to_sym) && fetch(with_some_var.to_sym).to_s.downcase == something
+def remote_file_exists?(full_path)
+  'true' ==  capture("if [ -e #{full_path} ]; then echo 'true'; fi").strip
 end
 
 # Path to where the generators live

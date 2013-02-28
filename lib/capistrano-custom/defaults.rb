@@ -15,28 +15,35 @@ Capistrano::Configuration.instance.load do
 
   load 'deploy/assets'
 
-
   set :stages, %w(production staging development)
   set :default_stage, "staging"
 
-  #set :application, "application-name" is done in deploy.rb
   set :scm, :mercurial
-
-
-  set :app_domain, fetch(:app_domain, application)
-
-  set (:deploy_to) { "/var/www/#{app_domain}" } #otherwise override by app_domain does not work
+  set :branch, fetch(:branch, "tip")
 
   set :user, "passenger"
   set :use_sudo, false
   set :web_server, :passenger
 
+  set (:full_app_domain) { "#{app_sub_domain}.#{parent_domain}" }
+
+  set (:deploy_to) { "/var/www/#{app_sub_domain}" } #otherwise override by app_sub_domain does not work
+
+  set (:keep_releases) { fetch(:keep_releases, 3) }
+
   # Backup location for old utils backup
   set :backup_to, "/home/#{user}/backups_deploy/#{application}"
 
-  set :full_app_domain, "#{app_domain}.ci.moez.fraunhofer.de"
 
-  # Setting up new server
+  #############################################################
+  # Default hooks
+  #############################################################
 
-  # after deploy:setup deploy:update (only get code) then bundle install then db:setup (create databases etc.) should be enough.
+  before "deploy", "deploy:web:disable"
+  after "deploy", "deploy:web:enable"
+
+  after "deploy:assets:symlink", "deploy:symlink_db_config"
+
+  after "deploy:restart", "deploy:cleanup"
+  after "deploy:web:enable" , "deploy:preload_app"
 end
