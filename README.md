@@ -75,16 +75,17 @@ specifying the branch to rollout is possible on any of the environments.
 ### Deploy to dev
 
 There are three dev domains preset. These are supposed to be used by individual developers to check their own work.
-The database is cleaned and recreated by db:setup on every rollout. Also all fixtures are loaded via db:fixtures:load.
+If deploy:migrations is used the database is cleaned and recreated by db:setup on every rollout.
+Also all fixtures are loaded via db:fixtures:load.
 Thus any of the three dev domains may be used by any application.
 
 For example a developer on of app_one may rollout his latest changes to p1 via
 
-    ~/app_one$ cap development deploy -S app_sub_domain=p1
+    ~/app_one$ cap development deploy:migrations -S app_sub_domain=p1
 
 Then a second developer can roll out his changes to a topic branch on app_foo via
 
-    ~/app_foo$ cap development deploy -S app_sub_domain=p1 branch=app_foo
+    ~/app_foo$ cap development deploy:migrations -S app_sub_domain=p1 branch=app_foo
 
 
 
