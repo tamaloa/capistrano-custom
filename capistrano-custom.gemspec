@@ -8,7 +8,10 @@ Gem::Specification.new do |gem|
   gem.version       = Capistrano::Custom::VERSION
   gem.authors       = ["Michael Prilop"]
   gem.email         = ["Michael.Prilop@gmail.com"]
-  gem.description   = %q{Custom capistrano tasks and defaults}
+  gem.description   = %q{Custom capistrano tasks and defaults. Highly opinionated set of capistrano recipes.
+                        For systems built on mysql, apache + passenger, ubuntu (although it should be adaptable for others).
+                        This gem allows to easily deploy to a production and a staging server and additionally
+                        to three predefined dev domains. It requires multistage extension }
   gem.summary       = %q{Custom capistrano tasks and defaults}
   gem.homepage      = ""
 
