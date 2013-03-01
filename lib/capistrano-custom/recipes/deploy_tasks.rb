@@ -40,7 +40,7 @@ Capistrano::Configuration.instance.load do
           template = File.read(gem_maintenance_template)
           result = ERB.new(template).result(binding)
 
-          put result, "#{shared_path}/system/#{maintenance_basename}.html", :mode => 0644
+          put result, maintenance_page, :mode => 0644
         end
 
       end

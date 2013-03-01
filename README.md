@@ -93,4 +93,7 @@ Then a second developer can roll out his changes to a topic branch on app_foo vi
 Gem structure for custom capistrano recipes and setting defaults is nicely explained by
 [timriley](http://openmonkey.com/blog/2010/01/19/making-your-capistrano-recipe-book/)
 
-Some recipes adopted from [webficient](https://github.com/webficient/capistrano-recipes)git-
+Some recipes adopted from [webficient](https://github.com/webficient/capistrano-recipes)
+
+maintenance page setup taken from [capistrano-maintenance gem](https://github.com/tvdeyen/capistrano-maintenance)
+(added support for app specific maintenance template)
