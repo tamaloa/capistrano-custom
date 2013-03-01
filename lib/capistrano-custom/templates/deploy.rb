@@ -21,9 +21,6 @@ require 'capistrano-custom/defaults'
 
 # The following tasks are more specific and should only be used if necessary
 
-before "deploy", "utils:backup:db"
-before "deploy", "utils:backup:files"
-
 # Setup cron jobs
 set :whenever_command, "bundle exec whenever"
 require "whenever/capistrano"
