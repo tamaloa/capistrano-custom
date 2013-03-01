@@ -20,14 +20,23 @@ Capistrano::Configuration.instance.load do
 
 
    namespace :web do
-     set (:maintenance_indicator_file) {File.join(shared_path,'system','maintenance.txt')}
+     set (:maintenance_page) {File.join(shared_path,'system','maintenance.html')}
        task :disable, :roles => :web do
-         on_rollback { run "#{try_sudo} rm #{maintenance_indicator_file}" }
+         on_rollback { run "#{try_sudo} rm #{maintenance_page}" }
 
-         run "#{try_sudo} touch #{maintenance_indicator_file}"
+         maintenance_template = File.join(current_path, 'public', 'maintenance.html')
+
+         if remote_file_exists?(maintenance_template)
+           # We use the existing maintenance page
+           run "#{try_sudo} cp #{maintenance_template} #{maintenance_page}"
+         else
+           #TODO create default file!
+           run "#{try_sudo} touch #{maintenance_page}"
+         end
+
        end
        task :enable, :roles => :web do
-         run "#{try_sudo} rm -f #{maintenance_indicator_file}"
+         run "#{try_sudo} rm -f #{maintenance_page}"
        end
      end
   end

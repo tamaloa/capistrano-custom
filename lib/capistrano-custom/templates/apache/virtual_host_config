@@ -1,0 +1,27 @@
+# This file goes into
+# /etc/apache2/sites-available/app_sub_domain
+# To activate the site:
+# sudo a2ensite app_sub_domain
+# sudo /etc/init.d/apache2 reload
+
+<VirtualHost *:80>
+
+    ServerName app_sub_domain.parent_domain # something like stage-app.yoursever.domain
+    DocumentRoot /var/www/app_sub_domain/current/public
+
+    <Directory /var/www/app_sub_domain/current/public>
+        Allow from all
+        Options -MultiViews
+        RailsEnv staging
+    </Directory>
+
+    RewriteEngine On
+    ErrorDocument 503 /system/maintenance.html
+    # We can still serve this stuff from public and compiled assets
+    RewriteCond %{REQUEST_URI} !.(css|gif|jpg|png)$
+    # If we have created this file here it's served
+    RewriteCond %{DOCUMENT_ROOT}/system/maintenance.html -f
+    RewriteCond %{SCRIPT_FILENAME} !maintenance.html
+    RewriteRule ^.*$ - [L,R=503]
+
+</VirtualHost>
