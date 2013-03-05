@@ -11,6 +11,7 @@ Capistrano::Configuration.instance.load do
       EOF
       task :dump, :roles => :db, :only => { :primary => true } do
         prepare_from_yaml
+        run "#{try_sudo} mkdir -p #{current_path}/backup"
         run "mysqldump --user=#{db_user} -p --host=#{db_host} #{db_name} | bzip2 -z9 > #{db_remote_file}" do |ch, stream, out|
         ch.send_data "#{db_pass}\n" if out =~ /^Enter password:/
           puts out
@@ -55,7 +56,7 @@ Capistrano::Configuration.instance.load do
       # Sets database variables from remote database.yaml
       def prepare_from_yaml
         set(:db_file) { "#{application}-dump.sql.bz2" }
-        set(:db_remote_file) { "#{shared_path}/backup/#{db_file}" }
+        set(:db_remote_file) { "#{current_path}/backup/#{db_file}" }
         set(:db_local_file)  { "tmp/#{db_file}" }
         set(:db_user) { db_config[rails_env]["username"] }
         set(:db_pass) { db_config[rails_env]["password"] }
