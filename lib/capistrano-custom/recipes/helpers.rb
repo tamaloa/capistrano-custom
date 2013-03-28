@@ -63,11 +63,3 @@ def generate_config(local_file,remote_file)
   upload temp_file, remote_file, :via => :scp
   `rm #{temp_file}`
 end 
-
-# =========================================================================
-# Executes a basic rake task. 
-# Example: run_rake log:clear
-# =========================================================================
-def run_rake(task)
-  run "cd #{release_path} && rake #{task} RAILS_ENV=#{environment}"
-end
