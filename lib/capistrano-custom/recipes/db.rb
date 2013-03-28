@@ -105,6 +105,12 @@ Capistrano::Configuration.instance.load do
       run "cd #{current_path}; rake RAILS_ENV=#{variables[:rails_env]} db:seed"
     end
 
+    desc "Populates the database with seed data"
+    task :setup do
+      Capistrano::CLI.ui.say "Creating and setting up the database..."
+      run "cd #{current_path}; rake RAILS_ENV=#{variables[:rails_env]} db:setup"
+    end
+
     desc "Populates the database with fixtures data"
     task :create_and_load_fixtures do
       exit if environment.eql?('production')
