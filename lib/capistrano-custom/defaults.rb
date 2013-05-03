@@ -21,7 +21,7 @@ Capistrano::Configuration.instance.load do
   set :scm, :mercurial
   set :branch, fetch(:branch, "tip")
 
-  set :user, "passenger"
+  set :user, "deploy"
   set :use_sudo, false
   set :web_server, :passenger
 
