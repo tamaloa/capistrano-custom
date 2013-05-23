@@ -22,8 +22,8 @@ Capistrano::Configuration.instance.load do
     task :symlink_app_config do
       set(:release_app_yml) { File.join(release_path, 'config', 'application.yml') }
       set(:shared_app_yml) { File.join(shared_path, 'config', 'application.yml') }
-      run "#{try_sudo} rm -f #{release_db_yml}}" #just in case a database.yml is checked in
-      run "#{try_sudo} ln -nfs #{shared_db_yml} #{release_db_yml}"
+      run "#{try_sudo} rm -f #{release_app_yml}}" #just in case a database.yml is checked in
+      run "#{try_sudo} ln -nfs #{shared_app_yml} #{release_app_yml}"
     end
 
     namespace :web do
