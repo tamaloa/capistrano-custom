@@ -102,13 +102,13 @@ Capistrano::Configuration.instance.load do
     desc "Populates the database with seed data"
     task :seed do
       Capistrano::CLI.ui.say "Populating the database..."
-      run "cd #{current_path}; rake RAILS_ENV=#{variables[:rails_env]} db:seed"
+      run_rake("db:seed")
     end
 
     desc "Populates the database with seed data"
     task :setup do
       Capistrano::CLI.ui.say "Creating and setting up the database..."
-      run "cd #{current_path}; rake RAILS_ENV=#{variables[:rails_env]} db:setup"
+      run_rake("db:setup")
     end
 
     desc "Populates the database with fixtures data"
