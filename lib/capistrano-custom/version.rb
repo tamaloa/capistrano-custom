@@ -1,5 +1,5 @@
 module Capistrano
   module Custom
-    VERSION = "0.4.2"
+    VERSION = "0.5.1"
   end
 end

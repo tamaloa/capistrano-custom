@@ -3,6 +3,7 @@ require 'erb'
 Capistrano::Configuration.instance.load do
 
   namespace :db do
+
     namespace :mysql do
       desc <<-EOF
       |CustomRecipes| Performs a compressed database dump. \
@@ -27,12 +28,6 @@ Capistrano::Configuration.instance.load do
         end
       end
 
-      desc "|CustomRecipes| Downloads the compressed database dump to this machine"
-      task :fetch_dump, :roles => :db, :only => { :primary => true } do
-        prepare_from_yaml
-        download db_remote_file, db_local_file, :via => :scp
-      end
-    
       desc "|CustomRecipes| Create MySQL database and user for this environment using prompted values"
       task :setup, :roles => :db, :only => { :primary => true } do
         prepare_from_yaml
@@ -52,29 +47,27 @@ Capistrano::Configuration.instance.load do
           end
         end
       end
-      
-      # Sets database variables from remote database.yaml
-      def prepare_from_yaml
-        set(:db_file) { "#{application}-dump.sql.bz2" }
-        set(:db_remote_file) { "#{current_path}/backup/#{db_file}" }
-        set(:db_local_file)  { "tmp/#{db_file}" }
-        set(:db_user) { db_config[rails_env]["username"] }
-        set(:db_pass) { db_config[rails_env]["password"] }
-        set(:db_host) { db_config[rails_env]["host"] }
-        set(:db_name) { db_config[rails_env]["database"] }
-      end
-        
-      def db_config
-        @db_config ||= fetch_db_config
+
+    end
+
+
+    namespace :postgres do
+      desc "|CustomRecipes| Performs a compressed database dump."
+      task :dump, :roles => :db, :only => {:primary => true} do
+        prepare_from_yaml
+        run "#{try_sudo} mkdir -p #{current_path}/backup"
+        run "pg_dump #{db_name} --clean --no-owner | bzip2 -z9 > #{db_remote_file}"
       end
 
-      def fetch_db_config
-        require 'yaml'
-        file = capture "cat #{shared_path}/config/database.yml"
-        db_config = YAML.load(file)
+      desc "|CustomRecipes| Restores the database from the latest compressed dump"
+      task :restore, :roles => :db, :only => {:primary => true} do
+        prepare_from_yaml
+        run "bzcat #{db_remote_file} | psql #{db_name}"
       end
+
     end
-    
+
+
     desc "|CustomRecipes| Create database.yml in shared path with settings for current stage and test env"
     task :create_yaml do
 
@@ -120,6 +113,13 @@ Capistrano::Configuration.instance.load do
       run_rake("db:fixtures:load")
     end
 
+
+    desc "|CustomRecipes| Downloads the compressed database dump to this machine"
+    task :fetch_dump, :roles => :db, :only => { :primary => true } do
+      prepare_from_yaml
+      download db_remote_file, db_local_file, :via => :scp
+    end
+
   end
     
   def prepare_for_db_command
@@ -128,7 +128,27 @@ Capistrano::Configuration.instance.load do
     #set(:db_user) { Capistrano::CLI.ui.ask "Enter #{environment} database username:" }
     #set(:db_pass) { Capistrano::CLI.password_prompt "Enter #{environment} database password:" }
   end
-  
+
+        # Sets database variables from remote database.yaml
+      def prepare_from_yaml
+        set(:db_file) { "#{application}-dump.sql.bz2" }
+        set(:db_remote_file) { "#{current_path}/backup/#{db_file}" }
+        set(:db_local_file) { "tmp/#{db_file}" }
+        set(:db_user) { db_config[rails_env]["username"] }
+        set(:db_pass) { db_config[rails_env]["password"] }
+        set(:db_host) { db_config[rails_env]["host"] }
+        set(:db_name) { db_config[rails_env]["database"] }
+      end
+
+      def db_config
+        @db_config ||= fetch_db_config
+      end
+
+      def fetch_db_config
+        require 'yaml'
+        file = capture "cat #{shared_path}/config/database.yml"
+        db_config = YAML.load(file)
+      end
 
   
   after "deploy:setup" do
