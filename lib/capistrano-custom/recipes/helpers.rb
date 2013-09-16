@@ -13,7 +13,7 @@ def environment
 end
 
 def run_rake(cmd, options={}, &block)
-  command = "cd #{release_path} && /usr/bin/env bundle exec rake #{cmd} RAILS_ENV=#{environment}"
+  command = "cd #{current_path} && /usr/bin/env bundle exec rake #{cmd} RAILS_ENV=#{environment}"
   run(command, options, &block)
 end
 
